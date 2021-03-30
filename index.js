@@ -31,21 +31,27 @@ export const headers = {
     'Cookie': `__cfduid=${COOKIE}`,
 };
 
-// Run program
-setInterval(async () => {
+async function run() {
     const moments = await getMoments(maxPrice);
+    if (!moments.length) {
+        console.log(`No moments found with price $${maxPrice}`);
+        setTimeout(run, interval * 1000);
+        return;
+    }
 
-    if (!moments.length) return;
+    console.log('Fount moment that matches criteria');
 
     const lowestPriceMoment = moments[0];
     const lowestPriceOffer = await getLowestPriceOffer(lowestPriceMoment);
-    console.log(`Found moment with id #${lowestPriceOffer.id}`);
     if (Number(lowestPriceOffer.price) > maxPrice) {
-        console.log(`Moment offer (${lowestPriceOffer.price}) is higher than maxPrice ${maxPrice}`);
+        console.log(`Moment offer (${lowestPriceOffer.price}) is higher than maxPrice $${maxPrice}`);
+        setTimeout(run, interval * 1000);
         return;
     }
     console.log(lowestPriceOffer);
+
     const link = `https://www.nbatopshot.com/moment/${lowestPriceOffer.owner.username}+${lowestPriceOffer.id}`;
     open(link).catch(error => console.log(error));
-    process.exit(1);
-}, interval * 1000);
+}
+
+run().catch(error => console.log(error));
