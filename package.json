@@ -1,0 +1,17 @@
+{
+  "name": "nba",
+  "version": "1.0.0",
+  "description": "",
+  "main": "getCheapest.js",
+  "type": "module",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "open": "^8.0.3",
+    "yargs": "^16.2.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Emil",
+  "license": "ISC"
+}
