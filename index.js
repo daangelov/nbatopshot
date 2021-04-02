@@ -23,13 +23,19 @@ const argv = yargs(hideBin(process.argv))
         type: "number",
         nargs: 1,
     })
+    .option("cookie", {
+        alias: "c",
+        describe: "Session cookie value",
+        type: "string",
+        nargs: 1,
+    })
     .argv;
 
-const {maxPrice = MAX_PRICE, interval = INTERVAL} = argv;
+const {maxPrice = MAX_PRICE, interval = INTERVAL, cookie = COOKIE} = argv;
 
 export const headers = {
     'Content-Type': 'application/json',
-    'Cookie': `__cfduid=${COOKIE}`,
+    'Cookie': `__cfduid=${cookie}`,
 };
 
 async function run() {
@@ -40,11 +46,25 @@ async function run() {
         return;
     }
 
+    console.log('Fount moment that matches criteria');
+
+    const lowestPriceMoment = moments[0];
+    const lowestPriceOffer = await getLowestPriceOffer(lowestPriceMoment);
+    if (Number(lowestPriceOffer.price) > maxPrice) {
+        console.log(`Moment offer (${lowestPriceOffer.price}) is higher than maxPrice $${maxPrice}`);
+        setTimeout(run, interval * 1000);
+        return;
+    }
+    console.log(lowestPriceOffer);
+
+    const link = `https://www.nbatopshot.com/moment/${lowestPriceOffer.owner.username}+${lowestPriceOffer.id}`;
+    open(link).catch(error => console.log(error));
+
     const testLink = 'https://www.nbatopshot.com/moment/Kyzui+ebaf333b-6aa8-4b21-8792-c91c6305af32';
 
     const browser = await puppeteer.launch({headless: false});
     const page = await browser.newPage();
-    await page.setCookie({url: testLink, name: '__cfduid', value: COOKIE});
+    await page.setCookie({url: testLink, name: '__cfduid', value: cookie});
     await page.goto(testLink);
 
     await browser.close();
