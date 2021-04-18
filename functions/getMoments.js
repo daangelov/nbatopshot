@@ -1,5 +1,4 @@
 import axios from "axios";
-import {headers} from "../index.js";
 import {searchMomentListingsDefault} from "../graphql/queries/searchMomentListingsDefault.js";
 
 const apiUrl = 'https://api.nbatopshot.com/marketplace/graphql?SearchMomentListingsDefault';
@@ -24,7 +23,7 @@ export async function getMoments(maxPrice) {
         },
     };
 
-    const response = await axios.post(apiUrl, data, {headers});
+    const response = await axios.post(apiUrl, data);
 
     return response.data.data.searchMomentListings.data.searchSummary.data.data;
 }

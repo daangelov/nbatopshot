@@ -1,5 +1,4 @@
 import axios from "axios";
-import {headers} from "../index.js";
 import {getUserMomentListingsDedicated} from "../graphql/queries/getUserMomentListingsDedicated.js";
 
 const apiUrl = 'https://api.nbatopshot.com/marketplace/graphql?GetUserMomentListingsDedicated';
@@ -16,7 +15,7 @@ export async function getLowestPriceOffer(lowestPriceMoment) {
         },
     };
 
-    const response = await axios.post(apiUrl, body, {headers});
+    const response = await axios.post(apiUrl, body);
 
     const momentListings = response.data.data.getUserMomentListings.data.momentListings;
 
