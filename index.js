@@ -38,42 +38,50 @@ export const headers = {
 };
 
 async function run() {
-    const moments = await getMoments(maxPrice);
-    if (!moments.length) {
-        console.log(`No moments found with price $${maxPrice}`);
-        setTimeout(run, interval * 1000);
-        return;
-    }
+    // const moments = await getMoments(maxPrice);
+    // if (!moments.length) {
+    //     console.log(`No moments found with price $${maxPrice}`);
+    //     setTimeout(run, interval * 1000);
+    //     return;
+    // }
+    //
+    // console.log('Fount moment that matches criteria');
+    //
+    // const lowestPriceMoment = moments[0];
+    // const lowestPriceOffer = await getLowestPriceOffer(lowestPriceMoment);
+    // if (Number(lowestPriceOffer.price) > maxPrice) {
+    //     console.log(`Moment offer (${lowestPriceOffer.price}) is higher than maxPrice $${maxPrice}`);
+    //     setTimeout(run, interval * 1000);
+    //     return;
+    // }
+    // console.log(lowestPriceOffer);
+    //
+    // const link = `https://www.nbatopshot.com/moment/${lowestPriceOffer.owner.username}+${lowestPriceOffer.id}`;
+    //
+    // console.log(link);
 
-    console.log('Fount moment that matches criteria');
+    // open(link).catch(error => console.log(error));
+    //
+    // // Test
+    //
 
-    const lowestPriceMoment = moments[0];
-    const lowestPriceOffer = await getLowestPriceOffer(lowestPriceMoment);
-    if (Number(lowestPriceOffer.price) > maxPrice) {
-        console.log(`Moment offer (${lowestPriceOffer.price}) is higher than maxPrice $${maxPrice}`);
-        setTimeout(run, interval * 1000);
-        return;
-    }
-    console.log(lowestPriceOffer);
+    const testLink = 'https://www.nbatopshot.com/moment/RigSanchezzz+7e772fe3-75a7-4767-ac1c-66289500b0bc';
+    // open(testLink).catch(error => console.log(error));
 
-    const link = `https://www.nbatopshot.com/moment/${lowestPriceOffer.owner.username}+${lowestPriceOffer.id}`;
-
-    console.log(link);
-    open(link).catch(error => console.log(error));
-
-    // Test
-
-    const testLink = 'https://www.nbatopshot.com/moment/dansilver+86bac83f-dd2d-433e-8cee-48b157b192cc';
-
-    const browser = await puppeteer.launch({headless: false});
-    const page = await browser.newPage();
-    const todayAfterOneMonth = new Date();
-    todayAfterOneMonth.setMonth(new Date().getMonth() + 1);
-    await page.setCookie(
-        {domain: '.nbatopshot.com', name: 'ts:session', value: SESSION, expires: todayAfterOneMonth.getTime()}
-    );
+    const browser = await puppeteer.launch({
+        headless: false,
+        executablePath: '/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome',
+        userDataDir: '/Users/drago/Library/Application\ Support/Google/Chrome',
+    });
+    //
+    // const page = await browser.newPage();
+    // const todayAfterOneMonth = new Date();
+    // todayAfterOneMonth.setMonth(new Date().getMonth() + 1);
+    // await page.setCookie(
+    //     {domain: '.nbatopshot.com', name: 'ts:session', value: SESSION, expires: todayAfterOneMonth.getTime()}
+    // );
     await page.goto(testLink);
-    await page.$eval('button[data-testid="mintedHeader-buy"]', el => el.click());
+    // await page.$eval('button[data-testid="mintedHeader-buy"]', el => el.click());
 
     // await browser.close();
 }

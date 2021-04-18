@@ -9,7 +9,7 @@ export async function getMoments(maxPrice) {
         query: searchMomentListingsDefault,
         variables: {
             byPrice: {
-                min: "0",
+                min: '10',
                 max: maxPrice.toString(),
             },
             byListingType: ["BY_USERS"],
