@@ -17,7 +17,11 @@ export async function getLiveTokenLink() {
     }).then(response => response.data);
 
     if (!deals) return null;
+
     const matchedDeal = deals.find(deal => deal.dealRating >= LIVETOKEN_FIRES && deal.price <= LIVETOKEN_PRICE && deal.momentGUID !== null && deal.gone !== true);
+
+    if (!matchedDeal) return null;
+
     logIntoFile(matchedDeal);
 
     return "https://www.nbatopshot.com/moment/" + matchedDeal.momentGUID;
