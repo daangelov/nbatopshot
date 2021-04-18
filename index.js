@@ -5,7 +5,7 @@ import puppeteer from "puppeteer";
 import open from "open";
 import {getMoments} from "./functions/getMoments.js";
 import {getLowestPriceOffer} from "./functions/getLowestPriceOffer.js";
-import {INTERVAL, MAX_PRICE, SESSION} from "./env.js";
+import {INTERVAL, MAX_PRICE} from "./env.js";
 
 const argv = yargs(hideBin(process.argv))
     .usage("Example usage: ./$0 --max-price 5 -interval 2")
@@ -23,65 +23,55 @@ const argv = yargs(hideBin(process.argv))
         type: "number",
         nargs: 1,
     })
-    .option("session", {
-        alias: "s",
-        describe: "Session cookie value",
-        type: "string",
-        nargs: 1,
-    })
     .argv;
 
-const {maxPrice = MAX_PRICE, interval = INTERVAL, session = SESSION} = argv;
+const {maxPrice = MAX_PRICE, interval = INTERVAL} = argv;
 
 export const headers = {
     'Content-Type': 'application/json',
 };
 
 async function run() {
-    // const moments = await getMoments(maxPrice);
-    // if (!moments.length) {
-    //     console.log(`No moments found with price $${maxPrice}`);
-    //     setTimeout(run, interval * 1000);
-    //     return;
-    // }
-    //
-    // console.log('Fount moment that matches criteria');
-    //
-    // const lowestPriceMoment = moments[0];
-    // const lowestPriceOffer = await getLowestPriceOffer(lowestPriceMoment);
-    // if (Number(lowestPriceOffer.price) > maxPrice) {
-    //     console.log(`Moment offer (${lowestPriceOffer.price}) is higher than maxPrice $${maxPrice}`);
-    //     setTimeout(run, interval * 1000);
-    //     return;
-    // }
-    // console.log(lowestPriceOffer);
-    //
-    // const link = `https://www.nbatopshot.com/moment/${lowestPriceOffer.owner.username}+${lowestPriceOffer.id}`;
-    //
-    // console.log(link);
+    const moments = await getMoments(maxPrice);
+    if (!moments.length) {
+        console.log(`No moments found with price $${maxPrice}`);
+        setTimeout(run, interval * 1000);
+        return;
+    }
+
+    console.log('Fount moment that matches criteria');
+
+    const lowestPriceMoment = moments[0];
+    const lowestPriceOffer = await getLowestPriceOffer(lowestPriceMoment);
+    if (Number(lowestPriceOffer.price) > maxPrice) {
+        console.log(`Moment offer (${lowestPriceOffer.price}) is higher than maxPrice $${maxPrice}`);
+        setTimeout(run, interval * 1000);
+        return;
+    }
+    console.log(lowestPriceOffer);
+
+    const link = `https://www.nbatopshot.com/moment/${lowestPriceOffer.owner.username}+${lowestPriceOffer.id}`;
+
+    console.log(link);
 
     // open(link).catch(error => console.log(error));
-    //
-    // // Test
-    //
 
-    const testLink = 'https://www.nbatopshot.com/moment/RigSanchezzz+7e772fe3-75a7-4767-ac1c-66289500b0bc';
-    // open(testLink).catch(error => console.log(error));
-
-    const browser = await puppeteer.launch({
-        headless: false,
-        executablePath: '/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome',
-        userDataDir: '/Users/drago/Library/Application\ Support/Google/Chrome',
+    const browser = await puppeteer.connect({
+        browserWSEndpoint: 'ws://127.0.0.1:9222/devtools/browser/13095ee7-8168-464d-8309-24bfa55ab799'
     });
-    //
-    // const page = await browser.newPage();
-    // const todayAfterOneMonth = new Date();
-    // todayAfterOneMonth.setMonth(new Date().getMonth() + 1);
-    // await page.setCookie(
-    //     {domain: '.nbatopshot.com', name: 'ts:session', value: SESSION, expires: todayAfterOneMonth.getTime()}
-    // );
-    await page.goto(testLink);
-    // await page.$eval('button[data-testid="mintedHeader-buy"]', el => el.click());
+    const page = await browser.newPage();
+    await page.goto(link);
+    setTimeout(async () => {
+        await page.$eval('button[data-testid="mintedHeader-buy"]', el => el.click());
+    }, 2000);
+
+    setTimeout(async () => {
+        await page.$eval('button[data-testid="confirm-cooldown"]', el => el.click());
+    }, 2000);
+
+    setTimeout(async () => {
+        await page.$eval('#__next button[type="button"]', el => el.click());
+    }, 2000);
 
     // await browser.close();
 }
