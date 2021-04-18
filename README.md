@@ -11,5 +11,5 @@ Options:
       --version    Show version number              [boolean]
   -m, --max-price  Maximum price of NFT             [number] [required]
   -i, --interval   Execution interval in seconds    [number]
-  -c, --cookie     Session cookie value             [string]
+  -t, --test       Test program                     [boolean]
 ```

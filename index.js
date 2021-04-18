@@ -26,8 +26,8 @@ const argv = yargs(hideBin(process.argv))
     })
     .option("test", {
         alias: "t",
-        describe: "Test service",
-        type: "bool",
+        describe: "Test program",
+        type: "boolean",
         nargs: 1,
     })
     .argv;
