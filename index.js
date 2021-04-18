@@ -5,7 +5,7 @@ import puppeteer from "puppeteer";
 import open from "open";
 import {getMoments} from "./functions/getMoments.js";
 import {getLowestPriceOffer} from "./functions/getLowestPriceOffer.js";
-import {COOKIE, INTERVAL, MAX_PRICE} from "./env.js";
+import {INTERVAL, MAX_PRICE, SESSION} from "./env.js";
 
 const argv = yargs(hideBin(process.argv))
     .usage("Example usage: ./$0 --max-price 5 -interval 2")
@@ -23,19 +23,18 @@ const argv = yargs(hideBin(process.argv))
         type: "number",
         nargs: 1,
     })
-    .option("cookie", {
-        alias: "c",
+    .option("session", {
+        alias: "s",
         describe: "Session cookie value",
         type: "string",
         nargs: 1,
     })
     .argv;
 
-const {maxPrice = MAX_PRICE, interval = INTERVAL, cookie = COOKIE} = argv;
+const {maxPrice = MAX_PRICE, interval = INTERVAL, session = SESSION} = argv;
 
 export const headers = {
     'Content-Type': 'application/json',
-    'Cookie': `__cfduid=${cookie}`,
 };
 
 async function run() {
@@ -58,16 +57,25 @@ async function run() {
     console.log(lowestPriceOffer);
 
     const link = `https://www.nbatopshot.com/moment/${lowestPriceOffer.owner.username}+${lowestPriceOffer.id}`;
+
+    console.log(link);
     open(link).catch(error => console.log(error));
 
-    const testLink = 'https://www.nbatopshot.com/moment/Kyzui+ebaf333b-6aa8-4b21-8792-c91c6305af32';
+    // Test
+
+    const testLink = 'https://www.nbatopshot.com/moment/dansilver+86bac83f-dd2d-433e-8cee-48b157b192cc';
 
     const browser = await puppeteer.launch({headless: false});
     const page = await browser.newPage();
-    await page.setCookie({url: testLink, name: '__cfduid', value: cookie});
+    const todayAfterOneMonth = new Date();
+    todayAfterOneMonth.setMonth(new Date().getMonth() + 1);
+    await page.setCookie(
+        {domain: '.nbatopshot.com', name: 'ts:session', value: SESSION, expires: todayAfterOneMonth.getTime()}
+    );
     await page.goto(testLink);
+    await page.$eval('button[data-testid="mintedHeader-buy"]', el => el.click());
 
-    await browser.close();
+    // await browser.close();
 }
 
 run().catch(error => console.log(error));
