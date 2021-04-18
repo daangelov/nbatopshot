@@ -4,7 +4,7 @@ import {hideBin} from "yargs/helpers";
 
 import {getMoments} from "./functions/getMoments.js";
 import {getLowestPriceOffer} from "./functions/getLowestPriceOffer.js";
-import {getLiveTokenLink} from "./functions/getLivetokenOffers.js";
+import {getLiveTokenLink} from "./functions/getLivetokenLink.js";
 import {purchase} from "./functions/purchase.js";
 import {logIntoFile} from "./functions/logIntoFile.js";
 
