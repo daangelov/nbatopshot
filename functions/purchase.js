@@ -11,7 +11,7 @@ export async function purchase(link) {
     // Go to link
     await Promise.all([
         page.goto(link),
-        page.waitForNavigation({waitUntil: 'networkidle2'}),
+        page.waitForNavigation({waitUntil: 'load'}),
     ]);
 
     // Click Buy button
@@ -27,9 +27,10 @@ export async function purchase(link) {
     try {
         await Promise.all([
             page.click('button[data-testid="confirm-cooldown"]'),
-            page.waitForNavigation({waitUntil: 'networkidle2'}),
+            page.waitForNavigation({waitUntil: 'load'}),
         ])
     } catch (e) {
+        logIntoFile(e);
         await page.close();
 
         return false;
@@ -39,16 +40,15 @@ export async function purchase(link) {
     try {
         await Promise.all([
             page.click(`#__next button[type="${IS_TEST ? 'button' : 'submit'}"]`),
-            page.waitForNavigation({waitUntil: 'networkidle2'})
+            page.waitForNavigation({waitUntil: 'load'})
         ]);
     } catch (e) {
+        logIntoFile(e);
         await page.close();
 
         return false;
     }
-
-    // Close page and log info
-    await page.close();
+    
     logIntoFile(IS_TEST ? 'Canceled purchase' : 'Success purchase');
 
     return true;
