@@ -20,12 +20,12 @@ async function run() {
 
     // Go to link and perform purchase
     const success = await purchase(link);
-    
+
     // Restart
     if (success) {
         setTimeout(run, 15 * 1000);
     } else {
-        run();
+        await run();
     }
 }
 
