@@ -3,7 +3,7 @@ import crypto from "crypto"
 import {logIntoFile} from "./logIntoFile.js";
 import {LIVETOKEN_PRICE, LIVETOKEN_FIRES} from "../env.js";
 
-export async function getLiveTokenLink() {
+export async function getLinkFromLiveToken() {
     const ipAddr = await axios.get('https://bot.whatismyipaddress.com').then(response => response.data);
     const {msServerTimeAhead} = await axios.get('https://livetoken.co/api/utils/timesync', {
         headers: {t: (new Date).getTime()}

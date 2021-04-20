@@ -1,15 +1,16 @@
 import axios from "axios";
 import {searchMomentListingsDefault} from "../graphql/queries/searchMomentListingsDefault.js";
+import {MAX_PRICE} from "../env.js";
 
 const apiUrl = 'https://api.nbatopshot.com/marketplace/graphql?SearchMomentListingsDefault';
 
-export async function getMoments(maxPrice) {
+export async function getMoments() {
     const data = {
         query: searchMomentListingsDefault,
         variables: {
             byPrice: {
                 min: '0',
-                max: maxPrice.toString(),
+                max: MAX_PRICE.toString(),
             },
             byListingType: ["BY_USERS"],
             orderBy: "PRICE_USD_ASC",

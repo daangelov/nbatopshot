@@ -1,8 +1,9 @@
 import axios from "axios";
 import puppeteer from "puppeteer";
 import {logIntoFile} from "./logIntoFile.js";
+import {IS_TEST} from "../env.js";
 
-export async function purchase(link, isTest) {
+export async function purchase(link) {
     const {webSocketDebuggerUrl} = await axios.get('http://127.0.0.1:9222/json/version').then(response => response.data);
     const browser = await puppeteer.connect({browserWSEndpoint: webSocketDebuggerUrl});
     const page = await browser.newPage();
@@ -37,7 +38,7 @@ export async function purchase(link, isTest) {
     // Click cancel or confirm purchase button
     try {
         await Promise.all([
-            page.click(`#__next button[type="${isTest ? 'button' : 'submit'}"]`),
+            page.click(`#__next button[type="${IS_TEST ? 'button' : 'submit'}"]`),
             page.waitForNavigation({waitUntil: 'networkidle2'})
         ]);
     } catch (e) {
@@ -48,7 +49,7 @@ export async function purchase(link, isTest) {
 
     // Close page and log info
     await page.close();
-    logIntoFile(isTest ? 'Canceled purchase' : 'Success purchase');
+    logIntoFile(IS_TEST ? 'Canceled purchase' : 'Success purchase');
 
     return true;
 }
