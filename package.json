@@ -5,9 +5,9 @@
   "main": "getCheapest.js",
   "type": "module",
   "dependencies": {
-    "axios": "^0.21.1",
-    "open": "^8.0.3",
-    "puppeteer": "^8.0.0"
+    "axios": "^1.1.3",
+    "open": "^8.4.0",
+    "puppeteer": "^19.2.2"
   },
   "scripts": {
     "start": "node start.js",
